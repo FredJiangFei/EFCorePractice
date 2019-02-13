@@ -21,8 +21,10 @@ namespace EFCorePractice
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                "Server=.;Database=EFCore;Trusted_Connection=True;"
+                "Server=.;Database=EFCore;Trusted_Connection=True;",
+                opt => opt.MaxBatchSize(30)
             );
+            optionsBuilder.EnableSensitiveDataLogging();
 
             // dotnet ef migrations add InitialCreate
             // dotnet ef database drop
