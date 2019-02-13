@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCorePractice.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20190213143130_InitialCreate")]
+    [Migration("20190213145422_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace EFCorePractice.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Ballte", b =>
+            modelBuilder.Entity("Battle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,7 +34,7 @@ namespace EFCorePractice.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Balltes");
+                    b.ToTable("Battles");
                 });
 
             modelBuilder.Entity("Quote", b =>
@@ -60,17 +60,24 @@ namespace EFCorePractice.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BallteId");
-
-                    b.Property<int>("BattleId");
-
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BallteId");
-
                     b.ToTable("Samurais");
+                });
+
+            modelBuilder.Entity("SamuraiBattle", b =>
+                {
+                    b.Property<int>("BattleId");
+
+                    b.Property<int>("SamuraiId");
+
+                    b.HasKey("BattleId", "SamuraiId");
+
+                    b.HasIndex("SamuraiId");
+
+                    b.ToTable("SamuraiBattle");
                 });
 
             modelBuilder.Entity("Quote", b =>
@@ -81,11 +88,17 @@ namespace EFCorePractice.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Samurai", b =>
+            modelBuilder.Entity("SamuraiBattle", b =>
                 {
-                    b.HasOne("Ballte")
-                        .WithMany("Samurais")
-                        .HasForeignKey("BallteId");
+                    b.HasOne("Battle", "Battle")
+                        .WithMany("SamuraiBattles")
+                        .HasForeignKey("BattleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Samurai", "Samurai")
+                        .WithMany("SamuraiBattles")
+                        .HasForeignKey("SamuraiId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
