@@ -78,6 +78,24 @@ namespace EFCorePractice.Migrations
                     b.ToTable("SamuraiBattle");
                 });
 
+            modelBuilder.Entity("SecretIdentity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("RealName");
+
+                    b.Property<int>("SamuraiId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SamuraiId")
+                        .IsUnique();
+
+                    b.ToTable("SecretIdentity");
+                });
+
             modelBuilder.Entity("Quote", b =>
                 {
                     b.HasOne("Samurai", "Samurai")
@@ -96,6 +114,14 @@ namespace EFCorePractice.Migrations
                     b.HasOne("Samurai", "Samurai")
                         .WithMany("SamuraiBattles")
                         .HasForeignKey("SamuraiId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SecretIdentity", b =>
+                {
+                    b.HasOne("Samurai", "Samurai")
+                        .WithOne("SecretIdentity")
+                        .HasForeignKey("SecretIdentity", "SamuraiId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

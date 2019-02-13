@@ -11,6 +11,9 @@ public class MyDbContext : DbContext
         modelBuilder.Entity<SamuraiBattle>()
         .HasKey(s => new { s.BattleId, s.SamuraiId });
         base.OnModelCreating(modelBuilder);
+
+        // modelBuilder.Entity<Samurai>()
+        // .Property(s => s.SecretIdentity).IsRequired();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
