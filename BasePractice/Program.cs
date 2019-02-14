@@ -14,7 +14,7 @@ namespace EFCorePractice
         static void Main(string[] args)
         {
             _context.GetService<ILoggerFactory>().AddProvider(new MyLoggerProvider());
-            InsertMultipleSamurais();
+            RawSqlQuery();
         }
 
         private static void AddSomeMoreSamurais()
@@ -32,6 +32,31 @@ namespace EFCorePractice
             var samuraiSammy = new Samurai { Name = "Sampson" };
             _context.Samurais.AddRange(new List<Samurai> { samurai, samuraiSammy });
             _context.SaveChanges();
+        }
+
+        private static void DeleteWhileTracked()
+        {
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Name == "Kambei Shimada");
+            _context.Samurais.Remove(samurai);
+            //alternates:
+            // _context.Remove(samurai);
+            // _context.Entry(samurai).State=EntityState.Deleted;
+            // _context.Samurais.Remove(_context.Samurais.Find(1));
+            _context.SaveChanges();
+        }
+
+        private static void RawSqlQuery()
+        {
+            // var samurais= _context.Samurais.FromSql("Select * from Samurais")
+            //              .OrderByDescending(s => s.Name)
+            //              .Where(s=>s.Name.Contains("Julie"))
+            //              .ToList();
+            var namePart = "Julie";
+            var samurais = _context.Samurais
+              .FromSql("EXEC FilterSamuraiByNamePart {0}", namePart)
+              .OrderByDescending(s => s.Name).ToList();
+
+            samurais.ForEach(s => Console.WriteLine(s.Name));
         }
     }
 }
