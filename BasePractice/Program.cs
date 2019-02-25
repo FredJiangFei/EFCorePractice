@@ -17,7 +17,6 @@ namespace EFCorePractice
             // _context.GetService<ILoggerFactory>().AddProvider(new MyLoggerProvider());
             // _context.Database.EnsureCreated();
         }
-
-     
+       
     }
 }
