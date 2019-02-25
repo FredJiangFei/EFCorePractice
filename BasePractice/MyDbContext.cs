@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCorePractice
@@ -14,6 +16,12 @@ namespace EFCorePractice
             modelBuilder.Entity<SamuraiBattle>()
             .HasKey(s => new { s.BattleId, s.SamuraiId });
             base.OnModelCreating(modelBuilder);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                modelBuilder.Entity(entityType.Name).Property<DateTime>("LastModified");
+                modelBuilder.Entity(entityType.Name).Ignore("IsDirty");
+            }
 
             // modelBuilder.Entity<Samurai>()
             // .Property(s => s.SecretIdentity).IsRequired();
@@ -34,6 +42,17 @@ namespace EFCorePractice
             // dotnet ef database update LastGoodMigration
             // dotnet ef migrations script
             // myDbContext.Database.Migrate();
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries()
+             .Where(e => e.State == EntityState.Added ||
+                         e.State == EntityState.Modified))
+            {
+                entry.Property("LastModified").CurrentValue = DateTime.Now;
+            }
+            return base.SaveChanges();
         }
     }
 }

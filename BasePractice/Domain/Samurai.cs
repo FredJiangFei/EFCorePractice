@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EFCorePractice
 {
-    public class Samurai
+    public class Samurai : ClientChangeTracker
     {
         public Samurai()
         {
